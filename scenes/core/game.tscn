@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3 uid="uid://6oj83a5ibe1t"]
+
+[ext_resource type="Script" uid="uid://uxu02x2fhw80" path="res://scenes/player/player.gd" id="1_2bsr5"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_avem7"]
+
+[node name="Main" type="Node"]
+
+[node name="Player" type="Node2D" parent="."]
+
+[node name="CharacterBody2D" type="CharacterBody2D" parent="Player"]
+script = ExtResource("1_2bsr5")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player/CharacterBody2D"]
+shape = SubResource("CapsuleShape2D_avem7")
+debug_color = Color(0.91672736, 0.21768361, 0.48097986, 0.41960785)
