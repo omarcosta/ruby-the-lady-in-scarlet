@@ -41,3 +41,7 @@ obj/
 
 # Godot 4 specific cache
 .godot/
+
+# Projeto-specific ignores
+test/
+

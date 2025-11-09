@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://dyamjkneg216i"]
+
+[ext_resource type="Script" uid="uid://73udknxfqb6a" path="res://entities/cam_smoothing/cam_smoothing.gd" id="1_2lm5n"]
+
+[node name="CamSmoothing" type="Camera2D"]
+position_smoothing_speed = 50.0
+script = ExtResource("1_2lm5n")
+lerp_weight = null
