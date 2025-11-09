@@ -2,6 +2,7 @@
 .import/
 export.cfg
 export_presets.cfg
+*.import
 
 # Mono (C#) specific
 .mono/
