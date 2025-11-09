@@ -1,16 +1,107 @@
-[gd_scene load_steps=3 format=3 uid="uid://6oj83a5ibe1t"]
+[gd_scene load_steps=11 format=3 uid="uid://6oj83a5ibe1t"]
 
 [ext_resource type="Script" uid="uid://uxu02x2fhw80" path="res://scenes/player/player.gd" id="1_2bsr5"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_avem7"]
+radius = 8.0
+height = 36.57
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_6ea2g"]
+load_path = "res://.godot/imported/idle.png-0b3350814172a79b7c247f453f19cc19.ctex"
+
+[sub_resource type="Animation" id="Animation_e12ky"]
+resource_name = "Idle"
+loop_mode = 1
+
+[sub_resource type="Animation" id="Animation_r4ld4"]
+resource_name = "Jumping"
+
+[sub_resource type="Animation" id="Animation_mm661"]
+resource_name = "Walking"
+loop_mode = 1
+
+[sub_resource type="Animation" id="Animation_6n8i3"]
+resource_name = "jijij"
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_6lnry"]
+_data = {
+&"Idle": SubResource("Animation_e12ky"),
+&"Jumping": SubResource("Animation_r4ld4"),
+&"Walking": SubResource("Animation_mm661"),
+&"jijij": SubResource("Animation_6n8i3")
+}
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_avem7"]
+size = Vector2(1511, 23)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_2bsr5"]
+size = Vector2(28, 220)
 
 [node name="Main" type="Node"]
 
 [node name="Player" type="Node2D" parent="."]
 
 [node name="CharacterBody2D" type="CharacterBody2D" parent="Player"]
+position = Vector2(57.75, 30.715)
 script = ExtResource("1_2bsr5")
+speed = 200.0
+jump_force = -350.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Player/CharacterBody2D"]
+position = Vector2(2.25, -1.7150002)
 shape = SubResource("CapsuleShape2D_avem7")
 debug_color = Color(0.91672736, 0.21768361, 0.48097986, 0.41960785)
+
+[node name="Sprite" type="Sprite2D" parent="Player/CharacterBody2D"]
+texture = SubResource("CompressedTexture2D_6ea2g")
+hframes = 6
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Player/CharacterBody2D"]
+libraries = {
+&"": SubResource("AnimationLibrary_6lnry")
+}
+autoplay = "Idle"
+
+[node name="RemoteTransform2D" type="RemoteTransform2D" parent="Player/CharacterBody2D"]
+remote_path = NodePath("../../Camera2D")
+
+[node name="Camera2D" type="Camera2D" parent="Player"]
+position = Vector2(57.75, 30.715)
+zoom = Vector2(1.5, 1.5)
+position_smoothing_enabled = true
+
+[node name="Chao" type="StaticBody2D" parent="."]
+position = Vector2(0, 200)
+
+[node name="ColorRect" type="ColorRect" parent="Chao"]
+offset_right = 1500.0
+offset_bottom = 25.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Chao"]
+position = Vector2(745.5, 12.5)
+shape = SubResource("RectangleShape2D_avem7")
+
+[node name="Parede 1" type="StaticBody2D" parent="."]
+position = Vector2(0, 200)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Parede 1"]
+position = Vector2(12, -89.5)
+shape = SubResource("RectangleShape2D_2bsr5")
+
+[node name="ColorRect" type="ColorRect" parent="Parede 1"]
+offset_top = -199.0
+offset_right = 24.0
+offset_bottom = 25.0
+
+[node name="Parede 2" type="StaticBody2D" parent="Parede 1"]
+position = Vector2(1473, -1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Parede 1/Parede 2"]
+position = Vector2(12, -89.5)
+shape = SubResource("RectangleShape2D_2bsr5")
+
+[node name="ColorRect" type="ColorRect" parent="Parede 1/Parede 2"]
+offset_top = -199.0
+offset_right = 24.0
+offset_bottom = 25.0
+metadata/_edit_use_anchors_ = true

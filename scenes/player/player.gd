@@ -3,7 +3,7 @@ extends CharacterBody2D
 
 # Variaveis carregadas automaticamente quando o node é renderizado
 # @onready var animation_player: AnimationPlayer = $AnimationPlayer
-# @onready var sprite_player: Sprite2D = $Sprite
+@onready var sprite_player: Sprite2D = $Sprite
 # @onready var sword_area: Area2D = $SwordArea
 # @onready var hit_area: Area2D = $HitArea
 # @onready var death_prefab: PackedScene = preload("res://scenes/resources/death.tscn")
@@ -18,7 +18,9 @@ extends CharacterBody2D
 # @export_range(0, 999) var max_magic: int = 100
 # @export_range(1, 99) var attack_points: int = 5
 # @export_range(1, 99) var stamina_for_attack: int = 20
-@export var speed: float = 2.0
+@export var speed: float = 300.0
+@export var jump_force: float = -450.0
+# @export var speed: float = 2.0
 
 @export_group("Balancing coefficients") # Coeficientes
 # @export_range(0,1) var coeff_velocity_atk: float = 0.25 # Redução de VEL ao ATK
@@ -37,26 +39,31 @@ extends CharacterBody2D
 #var stamina_recovery_cooldown: float = 0.0 # Temporizador de quando começa a restauração de stamina
 # var skill_a_cooldown: float = 0.0 # Contador de tempo para usar habilidade
 # var attacking_orientation: String = "RIGHT" # Define qual o lado do ataque: right, left, up, down
-var input_direction: Vector2 = Vector2(0 , 0)
+var gravity: float = ProjectSettings.get_setting("physics/2d/default_gravity")
+var horizontal_direction: float = 0.0
+# var deadzone: float = 0.1
+# var input_direction: Vector2 = Vector2(0 , 0)
 var target_velocity: Vector2 = Vector2(0 , 0)
 
 
+
 func _ready():
-	GameManager.player_life_points_max = max_health
+	# GameManager.player_life_points_max = max_health
 	# GameManager.player_stamina_points_max = max_stamina
 	# GameManager.player_magic_points_max = max_magic
+	pass
 
 
 func _process(delta) -> void:
 	#GameManager.player_position = position
 	GameManager.player_position = global_position
 	#print("Posição local: ", position, " | Posição global: ", global_position)
-	GameManager.player_life_points = health
+	# GameManager.player_life_points = health
 	# GameManager.player_stamina_points = stamina
 	# GameManager.player_magic_points = magic
-	read_input_moviment() # Obter o input de movimento
+	
 	# rotate_sprite() # Change sprite side
-	# default_animations() # # Animações padrão do player
+	#    default_animations() # # Animações padrão do player
 	# update_atk_cooldown(delta) # Temporizador de ATK
 	# update_hit_cooldown(delta) # Teporizador de levar dano
 	# update_stamina_recovery_cooldown(delta)
@@ -74,32 +81,27 @@ func _process(delta) -> void:
 
 
 func _physics_process(delta: float) -> void:
-	# Controle de velocidade
-	target_velocity = input_direction * speed * 100
-	#if is_attacking:
-		#target_velocity *= coeff_velocity_atk
-	#if is_running:
-		#target_velocity *= coeff_velocity_run
-	# Suaviza o movimento
-	velocity = lerp(velocity, target_velocity, 0.1) # De 0 a 1 sendo mais próximo de zero menas fricção
-	# move_and_slide() # Renderiza o código na tela
+	horizontal_direction = Input.get_axis("move_left", "move_right") # Input movement
+	rotate_sprite() # Change sprite side
+	# --- 4. CÁLCULO DE FÍSICA ---
+	if not is_on_floor(): # Apply gravity
+		velocity.y += gravity * delta
+
+	if Input.is_action_just_pressed("move_up") and is_on_floor():
+		velocity.y = jump_force
+
+	var target_velocity_x = horizontal_direction * speed
+	velocity.x = lerp(velocity.x, target_velocity_x, 0.1)
+
+	move_and_slide()
 
 
-func read_input_moviment() -> void:
-	input_direction = Input.get_vector("move_left", "move_right", "move_up", "move_down")
-	# Aplicar daadzone ao input de movimento 
-	if abs(input_direction.x) < deadzone:
-		input_direction.x = 0
-	if abs(input_direction.y) < deadzone:
-		input_direction.y = 0
-
-
-#func rotate_sprite() -> void:
+func rotate_sprite() -> void:
 	#if !is_attacking:
-		#if input_direction.x > 0:
-			#sprite_player.flip_h = false
-		#elif input_direction.x < 0:
-			#sprite_player.flip_h = true
+	if horizontal_direction > 0:
+		sprite_player.flip_h = false
+	elif horizontal_direction < 0:
+		sprite_player.flip_h = true
 
 
 func default_animations() -> void: 
